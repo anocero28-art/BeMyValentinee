@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desiré 💖</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    overflow:hidden;
+    text-align:center;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    max-width:350px;
+    position:relative;
+    z-index:2;
+}
+
+h1{
+    color:#e91e63;
+}
+
+button{
+    margin:10px;
+    padding:12px 20px;
+    font-size:16px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition: all 0.3s ease;
+}
+
+#yes{
+    background:#e91e63;
+    color:white;
+}
+
+#no{
+    background:#ddd;
+    position:relative;
+}
+
+.hidden{ display:none; }
+
+/* corazones */
+.heart{
+    position:absolute;
+    bottom:-20px;
+    animation: float 6s linear infinite;
+}
+@keyframes float{
+    to{
+        transform: translateY(-110vh);
+        opacity:0;
+    }
+}
+
+/* fuegos */
+.fire{
+    position:absolute;
+    font-size:20px;
+    animation: boom 1s ease-out forwards;
+}
+@keyframes boom{
+    to{
+        transform: scale(3);
+        opacity:0;
+    }
+}
+
+img{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:50%;
+    margin-bottom:10px;
+}
+
+#countdown{
+    margin-top:10px;
+    font-weight:bold;
+    color:#e91e63;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="screen1">
+    <img src="foto.jpg" alt="Nosotros">
+    <h1>Desiré 💘</h1>
+    <p id="phrase">¿Quieres ser mi San Valentín?</p>
+    <button id="yes">Sí 💖</button>
+    <button id="no">No</button>
+</div>
+
+<div class="card hidden" id="screen2">
+    <h1>¡Felicidades mi amor! 🎉</h1>
+    <p>
+        Nos vemos el próximo <b>14 de febrero</b><br>
+        después de las <b>4:00 pm</b>.<br>
+        Escríbeme para más detalles.<br>
+        <b>Te amo ❤️</b>
+    </p>
+
+    <div id="countdown"></div>
+</div>
+
+<script>
+// corazones flotando
+setInterval(()=>{
+    let h = document.createElement("div");
+    h.className="heart";
+    h.innerText="💖";
+    h.style.left = Math.random()*100 + "vw";
+    h.style.fontSize = (Math.random()*20+10) + "px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+},400);
+
+// mensajes de insistencia
+let frases = [
+    "¿Segura? 🥺",
+    "Piénsalo otra vez 💔",
+    "Prometo llevar chocolates 🍫",
+    "Habrá besitos 😘",
+    "Ándale di que sí ❤️",
+    "Última oportunidad 😭"
+];
+let intento = 0;
+
+let yesBtn = document.getElementById("yes");
+let noBtn = document.getElementById("no");
+let phrase = document.getElementById("phrase");
+let size = 16;
+
+// vibración
+function vibrar(){
+    if(navigator.vibrate){
+        navigator.vibrate(200);
+    }
+}
+
+// el NO se mueve
+noBtn.addEventListener("mouseover", ()=>{
+    noBtn.style.position="absolute";
+    noBtn.style.top = Math.random()*80 + "%";
+    noBtn.style.left = Math.random()*80 + "%";
+});
+
+// si presiona NO
+noBtn.addEventListener("click", ()=>{
+    vibrar();
+    size += 5;
+    yesBtn.style.fontSize = size + "px";
+    yesBtn.style.padding = (12 + size/2) + "px " + (20 + size/2) + "px";
+
+    if(intento < frases.length){
+        phrase.innerText = frases[intento];
+        intento++;
+    }
+});
+
+// fuegos artificiales
+function fuegos(){
+    for(let i=0;i<25;i++){
+        let f = document.createElement("div");
+        f.className="fire";
+        f.innerText="🎆";
+        f.style.left = Math.random()*100 + "vw";
+        f.style.top = Math.random()*100 + "vh";
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
+    }
+}
+
+// cuenta regresiva
+function actualizarCuenta(){
+    let now = new Date();
+    let year = now.getFullYear();
+    let target = new Date(year, 1, 14, 16, 0, 0); // febrero es 1
+
+    if(now > target) target = new Date(year+1, 1, 14, 16, 0, 0);
+
+    let diff = target - now;
+
+    let d = Math.floor(diff / (1000*60*60*24));
+    let h = Math.floor((diff / (1000*60*60)) % 24);
+    let m = Math.floor((diff / (1000*60)) % 60);
+    let s = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("countdown").innerText =
+        "Faltan " + d + "d " + h + "h " + m + "m " + s + "s 💖";
+}
+
+// cuando presiona SÍ
+yesBtn.addEventListener("click", ()=>{
+    vibrar();
+    document.getElementById("screen1").classList.add("hidden");
+    document.getElementById("screen2").classList.remove("hidden");
+    fuegos();
+    setInterval(actualizarCuenta,1000);
+});
+</script>
+
+</body>
+</html>
